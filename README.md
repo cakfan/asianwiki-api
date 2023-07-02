@@ -16,7 +16,7 @@ This API is only for practice purposes, not recommended for production.
 - [Express](https://expressjs.com/)
 - [Cheerio](https://www.npmjs.com/package/cheerio)
 - [Got Scraping](https://www.npmjs.com/package/got-scraping)
-- [NodeJs](https://nodejs.org/en)
+- [NodeJS](https://nodejs.org/en)
 
 ## API Documentation
 
