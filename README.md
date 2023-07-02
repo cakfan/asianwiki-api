@@ -20,4 +20,6 @@ This API is only for practice purposes, not recommended for production.
 
 ## API Documentation
 
-
+- URL: [`https://asianwiki-api.vercel.app/api/`](https://asianwiki-api.vercel.app/api/)
+- Query parameters: `featured`, `movie`, `drama
+    - Example: `https://asianwiki-api.vercel.app/api/?data=featured
