@@ -245,6 +245,7 @@ const getDetailPage = async (req, res) => {
 }
 
 const getData = (req, res) => {
+    console.log(BASE_URL)
     const path = req.path
     if (path.includes('detail')) {
         getDetailPage(req, res)
