@@ -66,6 +66,7 @@ const getMainPage = async (req, res) => {
 
     const response = await gotScraping.get(url)
     const $ = cheerio.load(response.body)
+    console.log(response.body)
     const featuredElement = $('#amazingslider-1 ul li')
     const moviesElement = $('#slidorion #slider .slide')
     const dramasElement = $('#slidorion2 #slider .slide2')
@@ -261,7 +262,6 @@ const getDetailPage = async (req, res) => {
 }
 
 const getData = (req, res) => {
-    console.log(BASE_URL)
     const path = req.path
     if (path.includes('detail')) {
         getDetailPage(req, res)
