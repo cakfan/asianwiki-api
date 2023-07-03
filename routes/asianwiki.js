@@ -1,4 +1,5 @@
 const { gotScraping } = require('got-scraping')
+const puppeteer = require('puppeteer')
 const cheerio = require('cheerio')
 
 const BASE_URL = process.env.BASE_URL
@@ -64,95 +65,104 @@ const getMainPage = async (req, res) => {
     const url = BASE_URL + path
     const data = req.query.data
 
-    const response = await gotScraping.get(url)
-    const $ = cheerio.load(response.body)
-    res.send(response.body)
-    // const featuredElement = $('#amazingslider-1 ul li')
-    // const moviesElement = $('#slidorion #slider .slide')
-    // const dramasElement = $('#slidorion2 #slider .slide2')
+    try {
+        const browser = await puppeteer.launch({ headless: true })
+        const page = await browser.newPage()
+        await page.setUserAgent('Mozilla/5.0 (Windows NT 5.1; rv:5.0) Gecko/20100101 Firefox/5.0')
+        await page.goto(url)
+        const pageContent = await page.content()
+        browser.close()
+        // const response = await gotScraping.get(url)
+        const $ = cheerio.load(pageContent)
+        const featuredElement = $('#amazingslider-1 ul li')
+        const moviesElement = $('#slidorion #slider .slide')
+        const dramasElement = $('#slidorion2 #slider .slide2')
 
-    // const featuredList = []
-    // if (featuredElement.length > 0) {
-    //     featuredElement.each((_index, element) => {
-    //         const $element = $(element)
-    //         const url = $element.find('a').attr('href')
-    //         const imgEl = $element.find('a img')
-    //         const imgUrl = imgEl.attr('src')
-    //         const title = imgEl.attr('alt')
-    //         featuredList.push({
-    //             title,
-    //             link: url,
-    //             api_link: req.get('host') + '/api/detail/' + url.replace(BASE_URL, ''),
-    //             poster: imgUrl
-    //         })
-    //     })
-    // }
+        const featuredList = []
+        if (featuredElement.length > 0) {
+            featuredElement.each((_index, element) => {
+                const $element = $(element)
+                const url = $element.find('a').attr('href')
+                const imgEl = $element.find('a img')
+                const imgUrl = imgEl.attr('src')
+                const title = imgEl.attr('alt')
+                featuredList.push({
+                    title,
+                    link: url,
+                    api_link: req.get('host') + '/api/detail/' + url.replace(BASE_URL, ''),
+                    poster: imgUrl
+                })
+            })
+        }
 
-    // if (data === "featured") {
-    //     res.json({
-    //         type: data,
-    //         totalItems: featuredList.length,
-    //         items: featuredList
-    //     })
-    // } else if (data === "drama") {
-    //     try {
-    //         const dramas = await handlePromisesData(req, $, dramasElement)
-    //         res.json({
-    //             type: data,
-    //             totalItems: dramas.length,
-    //             items: dramas
-    //         })
-    //     } catch (error) {
-    //         console.error(error)
-    //         res.status(400).json({
-    //             status: "error",
-    //             message: "Something went wrong"
-    //         })
-    //     }
-    // } else if (data === "movie") {
-    //     try {
-    //         const movies = await handlePromisesData(req, $, moviesElement)
-    //         res.json({
-    //             type: data,
-    //             totalItems: movies.length,
-    //             items: movies
-    //         })
-    //     } catch (error) {
-    //         console.error(error)
-    //         res.status(400).json({
-    //             status: "error",
-    //             message: "Something went wrong"
-    //         })
-    //     }
-    // } else {
-    //     try {
-    //         const movies = await handlePromisesData(req, $, moviesElement)
-    //         const dramas = await handlePromisesData(req, $, dramasElement)
-    //         res.json({
-    //             featured: {
-    //                 type: data,
-    //                 totalItems: featuredList.length,
-    //                 items: featuredList
-    //             },
-    //             dramas: {
-    //                 type: data,
-    //                 totalItems: dramas.length,
-    //                 items: dramas
-    //             },
-    //             movies: {
-    //                 type: data,
-    //                 totalItems: movies.length,
-    //                 items: movies
-    //             }
-    //         })
-    //     } catch (error) {
-    //         console.error(error)
-    //         res.status(400).json({
-    //             status: "error",
-    //             message: "Something went wrong"
-    //         })
-    //     }
-    // }
+        if (data === "featured") {
+            res.json({
+                type: data,
+                totalItems: featuredList.length,
+                items: featuredList
+            })
+        } else if (data === "drama") {
+            try {
+                const dramas = await handlePromisesData(req, $, dramasElement)
+                res.json({
+                    type: data,
+                    totalItems: dramas.length,
+                    items: dramas
+                })
+            } catch (error) {
+                console.error(error)
+                res.status(400).json({
+                    status: "error",
+                    message: "Something went wrong"
+                })
+            }
+        } else if (data === "movie") {
+            try {
+                const movies = await handlePromisesData(req, $, moviesElement)
+                res.json({
+                    type: data,
+                    totalItems: movies.length,
+                    items: movies
+                })
+            } catch (error) {
+                console.error(error)
+                res.status(400).json({
+                    status: "error",
+                    message: "Something went wrong"
+                })
+            }
+        } else {
+            try {
+                const movies = await handlePromisesData(req, $, moviesElement)
+                const dramas = await handlePromisesData(req, $, dramasElement)
+                res.json({
+                    featured: {
+                        type: data,
+                        totalItems: featuredList.length,
+                        items: featuredList
+                    },
+                    dramas: {
+                        type: data,
+                        totalItems: dramas.length,
+                        items: dramas
+                    },
+                    movies: {
+                        type: data,
+                        totalItems: movies.length,
+                        items: movies
+                    }
+                })
+            } catch (error) {
+                console.error(error)
+                res.status(400).json({
+                    status: "error",
+                    message: "Something went wrong"
+                })
+            }
+        }
+    } catch (error) {
+        console.error(error)
+    }
 
 }
 
