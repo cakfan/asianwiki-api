@@ -66,8 +66,8 @@ const getMainPage = async (req, res) => {
 
     const response = await gotScraping.get(url)
     const $ = cheerio.load(response.body)
-    console.log(response.body)
     const featuredElement = $('#amazingslider-1 ul li')
+    console.log(featuredElement.toString())
     const moviesElement = $('#slidorion #slider .slide')
     const dramasElement = $('#slidorion2 #slider .slide2')
 
