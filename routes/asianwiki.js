@@ -127,7 +127,23 @@ const getMainPage = async (req, res) => {
         try {
             const movies = await handlePromisesData(req, $, moviesElement)
             const dramas = await handlePromisesData(req, $, dramasElement)
-            res.json(data ? { kuy: data } : { featured: featuredList, dramas, movies })
+            res.json({
+                featured: {
+                    type: data,
+                    totalItems: featuredList.length,
+                    items: featuredList
+                },
+                dramas: {
+                    type: data,
+                    totalItems: dramas.length,
+                    items: dramas
+                },
+                movies: {
+                    type: data,
+                    totalItems: movies.length,
+                    items: movies
+                }
+            })
         } catch (error) {
             console.error(error)
             res.status(400).json({
