@@ -68,9 +68,11 @@ const getMainPage = async (req, res) => {
         const userAgent = 'Mozilla/5.0 (Windows NT 5.1; rv:5.0) Gecko/20100101 Firefox/5.0'
         const response = await gotScraping({
             url: url,
-            headers: { 'User-Agent': userAgent }
+            headers: { 'user-agent': userAgent }
         })
         const $ = cheerio.load(response.body)
+        const pageTitle = $('title').first().text()
+        console.log(pageTitle)
         const featuredElement = $('#amazingslider-1 ul li')
         const moviesElement = $('#slidorion #slider .slide')
         const dramasElement = $('#slidorion2 #slider .slide2')
