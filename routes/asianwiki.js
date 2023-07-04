@@ -72,7 +72,7 @@ const getMainPage = async (req, res) => {
                 'user-agent': userAgent
             }
         })
-        await delay(10000)
+        await delay(5000)
         const $ = cheerio.load(response.body)
         const pageTitle = $('title').first().text()
         console.log(pageTitle)
