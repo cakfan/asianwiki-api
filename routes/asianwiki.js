@@ -69,11 +69,10 @@ const getMainPage = async (req, res) => {
         const response = await gotScraping({
             url: url,
             headers: {
-                'user-agent': userAgent,
-                'Accept-Language': 'en',
-                'Referer': 'strict-origin-when-cross-origin'
+                'user-agent': userAgent
             }
         })
+        await delay(10000)
         const $ = cheerio.load(response.body)
         const pageTitle = $('title').first().text()
         console.log(pageTitle)
