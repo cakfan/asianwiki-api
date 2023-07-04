@@ -164,8 +164,8 @@ const getMainPage = async (req, res) => {
             }
         } else {
             try {
-                const movies = await handlePromisesData(req, $, moviesElement)
-                const dramas = await handlePromisesData(req, $, dramasElement)
+                // const movies = await handlePromisesData(req, $, moviesElement)
+                // const dramas = await handlePromisesData(req, $, dramasElement)
                 res.json({
                     featured: {
                         type: data,
@@ -175,12 +175,12 @@ const getMainPage = async (req, res) => {
                     dramas: {
                         type: data,
                         totalItems: dramas.length,
-                        items: dramas
+                        // items: dramas
                     },
                     movies: {
                         type: data,
                         totalItems: movies.length,
-                        items: movies
+                        // items: movies
                     }
                 })
             } catch (error) {
