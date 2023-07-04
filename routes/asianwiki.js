@@ -1,6 +1,16 @@
 const { gotScraping } = require('got-scraping')
 const cheerio = require('cheerio')
 
+let chrome = {}
+let puppeteer
+
+if (process.env.AWS_LAMBDA_FUNCTION_VERSION) {
+    chrome = require('chrome-aws-lambda')
+    puppeteer = require('puppeteer-core')
+} else {
+    puppeteer = require('puppeteer')
+}
+
 const BASE_URL = process.env.BASE_URL
 
 const handlePromisesData = (req, $, listElement) => {
@@ -60,21 +70,40 @@ const handlePromisesData = (req, $, listElement) => {
 }
 
 const getMainPage = async (req, res) => {
+    let options = {}
+    if (process.env.AWS_LAMBDA_FUNCTION_VERSION) {
+        options = {
+            args: [...chrome.args, "--hide-scrollbars", "--disable-web-security"],
+            defaultViewport: chrome.defaultViewport,
+            executablePath: await chrome.executablePath,
+            headless: true,
+            ignoreHTTPSErrors: true,
+        }
+    } else {
+        options = {
+            headless: 'new'
+        }
+    }
     const path = 'Main_Page'
     const url = BASE_URL + path
     const data = req.query.data
 
     try {
         const userAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36'
-        const response = await gotScraping({
-            url: url,
-            headers: {
-                'user-agent': userAgent
-            }
-        })
+        let browser = await puppeteer.launch(options)
+        let page = await browser.newPage()
+        await page.goto(url)
+        const pageTitle = await page.title()
+        const pageContent = await page.content()
+        // const response = await gotScraping({
+        //     url: url,
+        //     headers: {
+        //         'user-agent': userAgent
+        //     }
+        // })
         await delay(5000)
-        const $ = cheerio.load(response.body)
-        const pageTitle = $('title').first().text()
+        const $ = cheerio.load(pageContent)
+        // const pageTitle = $('title').first().text()
         console.log(pageTitle)
         const featuredElement = $('#amazingslider-1 ul li')
         const moviesElement = $('#slidorion #slider .slide')
