@@ -1,5 +1,4 @@
 const { gotScraping } = require('got-scraping')
-const { chromium } = require('playwright-core')
 const cheerio = require('cheerio')
 
 const BASE_URL = process.env.BASE_URL
@@ -66,18 +65,12 @@ const getMainPage = async (req, res) => {
     const data = req.query.data
 
     try {
-        const browser = await chromium.launch()
-        const context = await browser.newContext()
-        const page = await browser.newPage()
         const userAgent = 'Mozilla/5.0 (Windows NT 5.1; rv:5.0) Gecko/20100101 Firefox/5.0'
-        await page.setExtraHTTPHeaders({ 'User-Agent': userAgent })
-        await page.goto(url)
-        const pageContent = await page.content()
-        const pageTitle = await page.title()
-        await context.close()
-        await browser.close()
-        console.log(pageTitle)
-        const $ = cheerio.load(pageContent)
+        const response = await gotScraping({
+            url: url,
+            headers: { 'User-Agent': userAgent }
+        })
+        const $ = cheerio.load(response.body)
         const featuredElement = $('#amazingslider-1 ul li')
         const moviesElement = $('#slidorion #slider .slide')
         const dramasElement = $('#slidorion2 #slider .slide2')
