@@ -174,12 +174,12 @@ const getMainPage = async (req, res) => {
                     },
                     dramas: {
                         type: data,
-                        totalItems: dramas.length,
+                        // totalItems: dramas.length,
                         // items: dramas
                     },
                     movies: {
                         type: data,
-                        totalItems: movies.length,
+                        // totalItems: movies.length,
                         // items: movies
                     }
                 })
