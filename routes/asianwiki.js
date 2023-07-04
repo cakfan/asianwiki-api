@@ -65,7 +65,7 @@ const getMainPage = async (req, res) => {
     const data = req.query.data
 
     try {
-        const userAgent = 'Mozilla/5.0 (Windows NT 5.1; rv:5.0) Gecko/20100101 Firefox/5.0'
+        const userAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36'
         const response = await gotScraping({
             url: url,
             headers: {
