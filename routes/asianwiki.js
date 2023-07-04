@@ -134,11 +134,11 @@ const getMainPage = async (req, res) => {
             })
         } else if (data === "drama") {
             try {
-                const dramas = await handlePromisesData(req, $, dramasElement)
+                // const dramas = await handlePromisesData(req, $, dramasElement)
                 res.json({
                     type: data,
                     totalItems: dramas.length,
-                    items: dramas
+                    // items: dramas
                 })
             } catch (error) {
                 console.error(error)
@@ -149,11 +149,11 @@ const getMainPage = async (req, res) => {
             }
         } else if (data === "movie") {
             try {
-                const movies = await handlePromisesData(req, $, moviesElement)
+                // const movies = await handlePromisesData(req, $, moviesElement)
                 res.json({
                     type: data,
                     totalItems: movies.length,
-                    items: movies
+                    // items: movies
                 })
             } catch (error) {
                 console.error(error)
