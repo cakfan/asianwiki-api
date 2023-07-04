@@ -1,5 +1,4 @@
 const { gotScraping } = require('got-scraping')
-const puppeteer = require('puppeteer')
 const cheerio = require('cheerio')
 
 const BASE_URL = process.env.BASE_URL
@@ -66,17 +65,17 @@ const getMainPage = async (req, res) => {
     const data = req.query.data
 
     try {
-        const browser = await puppeteer.launch({ headless: 'new' })
-        const page = await browser.newPage()
         const userAgent = 'Mozilla/5.0 (Windows NT 5.1; rv:5.0) Gecko/20100101 Firefox/5.0'
         const response = await gotScraping({
             url: url,
-            headers: { 'user-agent': userAgent }
+            headers: {
+                'user-agent': userAgent,
+                'Accept-Language': 'en',
+                'Referer': 'strict-origin-when-cross-origin'
+            }
         })
-        await page.setContent(response.body, { waitUntil: 'networkidle0' })
-        const pageTitle = await page.title()
-        const pageContent = await page.content()
-        const $ = cheerio.load(pageContent)
+        const $ = cheerio.load(response.body)
+        const pageTitle = $('title').first().text()
         console.log(pageTitle)
         const featuredElement = $('#amazingslider-1 ul li')
         const moviesElement = $('#slidorion #slider .slide')
