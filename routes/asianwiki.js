@@ -101,7 +101,6 @@ const getMainPage = async (req, res) => {
         //         'user-agent': userAgent
         //     }
         // })
-        await delay(5000)
         const $ = cheerio.load(pageContent)
         // const pageTitle = $('title').first().text()
         console.log(pageTitle)
@@ -320,8 +319,4 @@ const getData = (req, res) => {
 
 module.exports = {
     getData
-}
-
-function delay(ms) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
 }
